@@ -63,11 +63,11 @@ trait GetStreamFeedOps extends HttpHelper { self: Injectable =>
 
   /**
    * Get activities from feed
-   * @param from get activities before this id (using range-based pagination)
+   * @param startId get activities before this id (using range-based pagination)
    * @param limit limit number of requests
    */
-  def getActivities[T](from: Option[String] = None, limit: Int = 25)(implicit m: Manifest[T], ec: ExecutionContext): Future[Seq[Activity[T]]] = {
-    val params = limitOffsetParams(from, limit)
+  def getActivities[T](startId: Option[String] = None, limit: Int = 25)(implicit m: Manifest[T], ec: ExecutionContext): Future[Seq[Activity[T]]] = {
+    val params = startIdLimitParams(startId, limit)
     type ResResponse = ResultsResponse[Seq[Activity[T]]]
     makeHttpRequest[No, ResResponse](new URI(""), Get, None, params).map(_.results)
   }
@@ -104,8 +104,8 @@ trait GetStreamFeedOps extends HttpHelper { self: Injectable =>
   /**
    * Get current feed followers
    */
-  def followers(offset: Option[String] = None, limit: Int = 25)(implicit ec: ExecutionContext): Future[Seq[Feed]] = {
-    val params = limitOffsetParams(offset, limit)
+  def followers(offset: Option[String] = None, limit: Int = 25, filter: Option[Seq[String]] = None)(implicit ec: ExecutionContext): Future[Seq[Feed]] = {
+    val params = limitOffsetFilterParams(offset, limit, filter)
     type ResResponse = ResultsResponse[List[Map[String, String]]]
     makeHttpRequest[No, ResResponse](new URI("followers"), Get, None, params) map { response =>
       response.results.map { row =>
@@ -141,6 +141,21 @@ trait GetStreamFeedOps extends HttpHelper { self: Injectable =>
     val limitParam = Some(new BasicNameValuePair("limit", limit.toString))
     val offsetParam = offset map (o => new BasicNameValuePair("offset", o))
     val params = limitParam :: offsetParam :: Nil
+    params.flatten
+  }
+
+  protected def startIdLimitParams(startId: Option[String], limit: Int): Seq[BasicNameValuePair] = {
+    val limitParam = Some(new BasicNameValuePair("limit", limit.toString))
+    val offsetParam = startId map (o => new BasicNameValuePair("id_lt", o))
+    val params = limitParam :: offsetParam :: Nil
+    params.flatten
+  }
+
+  protected def limitOffsetFilterParams(offset: Option[String], limit: Int, filter: Option[Seq[String]]): Seq[BasicNameValuePair] = {
+    val limitParam = Some(new BasicNameValuePair("limit", limit.toString))
+    val offsetParam = offset map (o => new BasicNameValuePair("offset", o))
+    val filterParam = filter map (f => new BasicNameValuePair("filter", f.mkString(",")))
+    val params = limitParam :: offsetParam :: filterParam :: Nil
     params.flatten
   }
 

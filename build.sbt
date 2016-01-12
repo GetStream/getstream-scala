@@ -1,14 +1,14 @@
 name := "getstream-scala-client"
 
-scalaVersion := "2.10.4"
+scalaVersion := "2.11.6"
 
 libraryDependencies ++= Seq(
-	"org.json4s" %% "json4s-jackson" % "3.2.11",
-	"org.json4s" %% "json4s-ext" % "3.2.11",
-	"com.twitter" %% "finagle-httpx" % "6.24.0",
-	"com.typesafe" % "config" % "1.2.1",
-	"joda-time" % "joda-time" % "2.7",
+	"org.json4s" %% "json4s-jackson" % "3.3.0",
+	"org.json4s" %% "json4s-ext" % "3.3.0",
+	"com.twitter" %% "finagle-httpx" % "6.29.0",
+	"com.typesafe" % "config" % "1.3.0",
+	"joda-time" % "joda-time" % "2.9.1",
 	"org.apache.httpcomponents" % "httpcore" % "4.4",
 	"org.apache.httpcomponents" % "httpclient" % "4.4",
-	"org.scalatest" % "scalatest_2.10" % "2.2.4" % "test"
+	"org.scalatest" % "scalatest_2.11" % "2.2.5" % "test"
 )
