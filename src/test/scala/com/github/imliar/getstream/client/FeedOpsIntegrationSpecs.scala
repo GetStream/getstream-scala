@@ -71,7 +71,7 @@ class FeedOpsIntegrationSpecs extends FlatSpec with Matchers with ScalaFutures {
     val activityWithId = client(feed).addActivity(activity)
 
     activityWithId.map(_.id.nonEmpty).futureValue shouldBe true
-    activityWithId.map(_.copy(id = None)).futureValue shouldBe activity
+    activityWithId.map(_.copy(id = None)).map(_.copy(time = None)).futureValue shouldBe activity
   }
 
   it should "remove activity from feed" in {
@@ -90,17 +90,6 @@ class FeedOpsIntegrationSpecs extends FlatSpec with Matchers with ScalaFutures {
 
     val activitiesWithId = client(feed).addActivities(activities)
 
-    activitiesWithId.map{ _.map (_.copy(id = None)) }.futureValue shouldBe activities
-  }
-
-  it should "add activity to targeted feeds" in {
-    val feed = randomUserFeed
-    val mentionedFeed = randomUserFeed
-    val activity = randomActivity.copy[String](to = Seq(mentionedFeed))
-
-    val activityWithId = client(feed).addActivity(activity).futureValue
-
-    val activityFromFeed = client(mentionedFeed).getActivities[String]().map(_.headOption).futureValue
-    activityFromFeed shouldBe Some(activityWithId)
+    activitiesWithId.map{ _.map (_.copy(id = None)) }.map{ _.map (_.copy(time = None)) }.futureValue shouldBe activities
   }
 }

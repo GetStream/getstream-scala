@@ -23,7 +23,7 @@ trait GetStreamSerializer {
  */
 object GetStreamDefaultSerializer extends GetStreamSerializer {
 
-  private implicit val formats = DefaultFormats ++ JodaTimeSerializers.all + FeedSerializer
+  private implicit val formats = DefaultFormats ++ JodaTimeSerializers.all + FeedSerializer + DateTimeSerializer
 
   override def serialize[A <: AnyRef](a: A)(implicit m: Manifest[A]): String = {
     write(a)
