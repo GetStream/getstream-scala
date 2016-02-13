@@ -9,7 +9,7 @@ case class Activity[T](
   id: Option[String] = None,
   actor: String,
   verb: String,
-  `object`: T,
+  `object`: String,
   target: Option[String] = None,
   time: Option[DateTime] = None,
   to: Seq[Feed] = Seq.empty,
